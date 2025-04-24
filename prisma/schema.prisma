@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model user {
+  user_id  Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  pass     String
+  status   String  @default("Active")
+  role     UserRole @default(USER)
+  createAt DateTime @default(now())
+  profile  String?
+  otp      Int?
+
+  favorite favorite[]
+  cart cart[]
+  review review[]
+}
+
+model offer {
+  id             Int    @id @default(autoincrement())
+  name           String
+  restaurantId   Int
+  quantity       Int
+  title          String
+  claimedCount   Int        @default(0)
+  pointsPerOffer Int
+  createdAt      DateTime   @default(now())
+  restaurant     restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+
+model restaurant {
+  id     Int @id @default(autoincrement())
+  name   String
+  location String
+  offer offer[]
+}
+
+model product{
+  id     Int @id@default(autoincrement())
+  name   String @unique
+  description String
+  price  Int
+  city   String
+  state  String
+  country String
+
+  favorite favorite[]
+  cart cart[]
+  review review[]
+}
+
+model favorite {
+  id        Int      @id @default(autoincrement())
+  user_id    Int
+  product_id Int
+
+  user      user     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  product   product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, product_id])
+}
+
+
+model cart {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  product_id Int
+  quantity   Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       user     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  product    product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, product_id])
+}
+
+model review {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  product_id Int
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       user     @relation(fields: [user_id], references: [user_id])
+  product    product  @relation(fields: [product_id], references: [id])
+
+  @@unique([user_id, product_id])
+}
+
+
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum UserStatus{
+  ACTIVE
+  INACTIVE
+}
+
+enum SortBy{
+  EMAIL
+  NAME
+}
+
+enum OrderBy{
+  ASC
+  DESC
+}
