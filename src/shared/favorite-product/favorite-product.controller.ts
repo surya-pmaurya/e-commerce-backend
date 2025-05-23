@@ -89,7 +89,7 @@ export class FavoriteController {
    */
   @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_ALL_FAV_PRO})
   @Delete()
-  async removeAllFavorite(@AuthUser("user_id") user_id: number) {
+  async removeAllFavorite(@AuthUser("id") user_id: number) {
     return await this.favoriteService.removeAllFavorite(user_id);
   }
 }

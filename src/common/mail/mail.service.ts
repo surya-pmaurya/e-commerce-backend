@@ -37,7 +37,7 @@ export class MailService {
       text: "A new offer just launched!",
       html: `
   <h1>Hi  ${username} </h1>
-  <p>We have got a special offer for you!</p>
+  <p>We have an special offer for you!</p>
   <strong>${data.name}</strong>: ${data.title}`,
     });
   }
@@ -53,8 +53,8 @@ export class MailService {
     await this.transport.sendMail({
       from: EMAIL_M.EMAIL,
       to: email,
-      subject: 'Welcome to the E-Commerce Backend System',
-      text: `Hello ${username} You have successfully logedin`
+      subject: EMAIL_M.EMAIL_SUBJECT,
+      text: `Welcome, ${username} ${EMAIL_M.TEXT_MESSAGE}`
     })
      this.logger.log(`[Email sent] To ${email}`)
   }

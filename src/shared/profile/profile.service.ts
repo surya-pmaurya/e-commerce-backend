@@ -15,10 +15,10 @@ export class ProfileService {
    * @param {*} file
    * @memberof ProfileService
    */
-  async uploadProfile(id: number, file: any) {
+  async uploadProfile(user_id: number, file: any) {
     if (!file) throw new NotFoundException(AUTH_MESSAGES.FILE_NOT_FOUND);
     const ext = path.extname(file.originalname);
-    const fileName = `${id}${ext}`;
+    const fileName = `${user_id}${ext}`;
     const uploadPath = path.join("./uploads", fileName);
 
     if (fs.existsSync(uploadPath)) {
@@ -32,7 +32,7 @@ export class ProfileService {
     fs.writeFileSync(uploadPath, file.buffer);
 
     await this.prisma.user.update({
-      where: { user_id: id },
+      where: { id: user_id },
       data: { profile: uploadPath },
     });
   }
@@ -41,15 +41,15 @@ export class ProfileService {
   /**
    *Update profile photo
    *
-   * @param {number} id
+   * @param {number} user_id
    * @param {*} file
    * @memberof ProfileService
    */
-  async updateProfile(id: number, file: any) {
+  async updateProfile(user_id: number, file: any) {
     if (!file) throw new NotFoundException(PROFILE_MESSAGES.NOT_FOUND)
 
     const ext = path.extname(file.originalname);
-    const filename = `${id}${ext}`;
+    const filename = `${user_id}${ext}`;
     const uploadPath = path.join("./uploads", filename);
 
     if (fs.existsSync(uploadPath)) {
@@ -59,7 +59,7 @@ export class ProfileService {
     fs.writeFileSync(uploadPath, file.buffer);
 
     await this.prisma.user.update({
-      where: { user_id: id },
+      where: { id: user_id },
       data: { profile: uploadPath },
     });
   }

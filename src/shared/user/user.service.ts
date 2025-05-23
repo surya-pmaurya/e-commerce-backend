@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, HttpStatus, ConflictException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import { PrismaService } from "src/prisma.service";
 import { MailService } from "src/common/mail/mail.service";
 import { SuccessResponse } from "src/interceptor/success-response.interface";
@@ -33,6 +33,8 @@ export class UsersService {
       await this.prisma.user.create({
         data: { ...dto, pass: hashedPassword },
       });
+
+      // sending singnup mail to the register  user.
       await this.mailService.signupMail(dto.email, dto.name);
       return {
         message: USER_MESSAGES.REGISTER_SUCCESS,
@@ -88,12 +90,12 @@ export class UsersService {
   /**
    *get users by id
    *
-   * @param {number} user_id
+   * @param {number} id
    * @memberof UsersService
    */
   async getUserById(userId: number): Promise<SuccessResponse<any>> {
     const user = await this.prisma.user.findUnique({
-      where: { user_id: Number(userId) },
+      where: { id: Number(userId) },
     });
     if (!user) throw new NotFoundException(USER_MESSAGES.NOT_FOUND);
     return {

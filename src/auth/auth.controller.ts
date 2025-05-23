@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpStatus, Req, Delete, BadRequestException } from "@nestjs/common";
+import { Controller, Post, Body, HttpStatus, Req, Delete, BadRequestException, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -10,6 +10,7 @@ import { USER_MESSAGES } from "src/common/constants/user-constants";
 import { SWAGGER_MESSAGES } from "src/common/constants/swagger-constants";
 import { SuccessResponse } from "src/interceptor/success-response.interface";
 import { LogInPayload } from "src/common/interfaces/payload.interface";
+import { AuthGuard } from "src/common/guards/auths.guards";
 
 @ApiTags("Authentication Controller")
 @Controller("auth")
@@ -58,14 +59,19 @@ export class AuthController {
     }
   } 
   
-
+@UseGuards(AuthGuard)
   @Delete('delete-user')
   @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE })
-  async deleteUser(@Body() user: LogInPayload) {
+  async deleteUser(@Req() req: Request) {
+    const user = req.user as LogInPayload;
     if (!user.userId) {
-      throw new BadRequestException();
+      throw new BadRequestException("Invalid User");
     }
     await this.authService.deleteUser(user.userId)
+    return {
+      statusCode: 200,
+      message: USER_MESSAGES.DELETED,
+    };
     }
 /**
  *forgot password send reset request 

@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import { PrismaService } from "src/prisma.service";
 import { JwtService } from "@nestjs/jwt/dist/jwt.service";
 import { MailService } from "src/common/mail/mail.service";
@@ -13,6 +13,7 @@ import { TokenDTO } from "./dto/token.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { USER_MESSAGES } from "src/common/constants/user-constants";
 import { PASSWORD_MESSAGES } from "src/common/constants/pass-constants";
+
 
 @Injectable()
 export class AuthService {
@@ -41,7 +42,7 @@ export class AuthService {
       throw new UnauthorizedException(USER_MESSAGES.INVALID_CREDENTIALS);
 
     const payload = {
-      userId: user.user_id,
+      userId: user.id,
       email: user.email,
       role: user.role,
     };
@@ -49,10 +50,16 @@ export class AuthService {
     return { accessToken };
   }
 
-  async deleteUser(user_id: number) { 
+  async deleteUser(user_id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: user_id },
+    });
+    if (!user) {
+      throw new NotFoundException(USER_MESSAGES.NOT_FOUND);
+    }
     await this.prisma.user.delete({
-      where: {user_id}
-    })
+      where: { id: user_id },
+    });
   }
 
   /**
@@ -69,7 +76,7 @@ export class AuthService {
     if (!user) throw new NotFoundException(USER_MESSAGES.NOT_FOUND);
     const randomToken = Math.floor(1000 + Math.random() * 9000);
     await this.prisma.user.update({
-      where: { user_id: user.user_id },
+      where: { id: user.id },
       data: { otp: randomToken },
     });
     const resetLink = PASSWORD_MESSAGES.EMAIL_LINK;
