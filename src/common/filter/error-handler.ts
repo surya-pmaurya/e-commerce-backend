@@ -13,6 +13,7 @@ import {
 import { Request, Response } from "express";
 import { setErrorResponse } from "./error.response";
 import { Prisma } from "@prisma/client";
+import { MulterError } from "multer";
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -81,6 +82,19 @@ export class AllExceptionsFilter implements ExceptionFilter {
           : (exception as any)?.message;
         code = (exception as any).code;
         break;
+      case MulterError:
+        const multerMessageMap = {
+          LIMIT_FILE_SIZE: "File too large (max 5MB)",
+          LIMIT_UNEXPECTED_FILE: "Only image files are allowed",
+        };
+
+        const errCode = (exception as MulterError).code;
+        status = HttpStatus.BAD_REQUEST;
+        message =
+          multerMessageMap[errCode] || (exception as MulterError).message;
+        code = errCode;
+        break;
+
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;
     }

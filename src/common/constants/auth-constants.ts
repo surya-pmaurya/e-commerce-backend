@@ -1,6 +1,6 @@
 export const AUTH_MESSAGES = {
     INVALID_CREDENTIALS: "Invalid email or password",
-    UNAUTHORIZED: "Unauthorized access",
+    UNAUTHORIZED: "Unauthorized access! OR Tocken Expired!",
     TOKEN_EXPIRED: "Token has expired",
     INVALID_TOKEN: "Invalid token",
     INTERNAL_ERROR: "Something went wrong",

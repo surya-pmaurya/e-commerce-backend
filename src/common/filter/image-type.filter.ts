@@ -7,7 +7,7 @@ export const imageFileFilter = (
   file: any,
   callback: (error: Error | null, acceptFile: boolean) => void
 ) => {
-  if (!file.mimetype.match(/\/(jpeg|png|jpg)$/)) {
+  if (!file.mimetype.match(/^image\/(jpeg|png|jpg|webp|gif)$/)) {
     return callback(new BadRequestException(PROFILE_MESSAGES.TYPE), false);
   }
   callback(null, true);

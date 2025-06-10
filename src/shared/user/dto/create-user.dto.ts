@@ -7,8 +7,6 @@ import {
   IsEmail,
   MaxLength,
   IsString,
-  IsNumber,
-  Max,
   IsOptional,
 } from "class-validator";
 import { UserRole } from "src/common/enum/user-role.enum";
