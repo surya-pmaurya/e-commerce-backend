@@ -34,7 +34,7 @@ export class CartService {
         where: { id: isProductExist.id },
         data: { quantity: isProductExist.quantity + addToCartdto.quantity },
         select: {
-          product: {
+          Product: {
             select: {
               name: true,
             },
@@ -51,7 +51,7 @@ export class CartService {
         quantity: addToCartdto.quantity,
       },
       select: {
-        product: {
+        Product: {
           select: {
             name: true,
           },
@@ -96,7 +96,7 @@ export class CartService {
         quantity: updateCartDto.quantity,
       },
       select: {
-        product: {
+        Product: {
           select: {
             name: true,
           },
@@ -119,7 +119,7 @@ export class CartService {
         user_id: userId,
       },
       select: {
-        product: {
+        Product: {
           select: {
             name: true,
           },
@@ -158,7 +158,7 @@ export class CartService {
         },
       },
       select: {
-        product: {
+        Product: {
           select: {
             id: true,
             name: true,

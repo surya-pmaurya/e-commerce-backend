@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException, HttpStatus, ConflictException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  HttpStatus,
+  ConflictException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcryptjs";
-import { PrismaService } from "src/prisma.service";
-import { MailService } from "src/common/mail/mail.service";
-import { SuccessResponse } from "src/interceptor/success-response.interface";
-import { USER_MESSAGES } from "src/common/constants/user-constants";
+import { PrismaService } from "../../prisma.service";
+import { MailService } from "../../common/mail/mail.service";
+import { SuccessResponse } from "../../interceptor/success-response.interface";
+import { USER_MESSAGES } from "../../common/constants/user-constants";
 import { GetUsersDTO } from "./dto/get-user.dto";
 
 @Injectable()
@@ -22,25 +27,23 @@ export class UsersService {
    * @memberof UsersService
    */
   async signupUser(dto: CreateUserDto): Promise<SuccessResponse<any>> {
-    
-      const existingUser = await this.prisma.user.findUnique({
-        where: { email: dto.email },
-      });
-      if (existingUser)
-        throw new ConflictException(USER_MESSAGES.EMAIL_EXISTS);
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existingUser) throw new ConflictException(USER_MESSAGES.EMAIL_EXISTS);
 
-      const hashedPassword = await bcrypt.hash(dto.pass, 10);
-      await this.prisma.user.create({
-        data: { ...dto, pass: hashedPassword },
-      });
+    const hashedPassword = await bcrypt.hash(dto.pass, 10);
+    await this.prisma.user.create({
+      data: { ...dto, pass: hashedPassword },
+    });
 
-      // sending singnup mail to the register  user.
-      await this.mailService.signupMail(dto.email, dto.name);
-      return {
-        message: USER_MESSAGES.REGISTER_SUCCESS,
-        statusCode: HttpStatus.OK,
-      };
-    } 
+    // sending singnup mail to the register  user.
+    await this.mailService.signupMail(dto.email, dto.name);
+    return {
+      message: USER_MESSAGES.REGISTER_SUCCESS,
+      statusCode: HttpStatus.OK,
+    };
+  }
 
   /**
    *Get all users by searching and filtering
@@ -75,8 +78,8 @@ export class UsersService {
       this.prisma.user.count({ where: whereClause }),
     ]);
 
-
-    return { message:USER_MESSAGES.USER_LIST,
+    return {
+      message: USER_MESSAGES.USER_LIST,
       data: users,
       meta: {
         total,

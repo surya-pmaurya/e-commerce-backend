@@ -77,4 +77,16 @@ export class MailService {
     });
      this.logger.log(`[Eamil Sent] To: ${email}`);
   }
+
+
+
+  async sendPassUpdateMail(email: string, resetLink: string, randomToken: number) {
+    await this.transport.sendMail({
+      from: EMAIL_M.EMAIL,
+      to: email,
+      subject: "Password Updated Succesfully",
+      text: `Your password updated succesfully for ${email}`,
+    });
+     this.logger.log(`[Eamil Sent] To: ${email}`);
+  }
 }

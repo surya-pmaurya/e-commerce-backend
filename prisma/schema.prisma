@@ -8,7 +8,7 @@ datasource db {
 }
 
 
-model user {
+model User {
   id  Int      @id @default(autoincrement())
   name     String
   email    String   @unique
@@ -19,12 +19,12 @@ model user {
   profile  String?
   otp      Int?
 
-  favorite favorite[]
-  cart cart[]
-  review review[]
+  Favorite Favorite[]
+  Cart Cart[]
+  Review Review[]
 }
 
-model offer {
+model Offer {
   id             Int    @id @default(autoincrement())
   name           String
   restaurantId   Int
@@ -33,17 +33,19 @@ model offer {
   claimedCount   Int        @default(0)
   pointsPerOffer Int
   createdAt      DateTime   @default(now())
-  restaurant     restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  Restaurant     Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 }
 
-model restaurant {
+model Restaurant {
   id     Int @id @default(autoincrement())
   name   String
   location String
-  offer offer[]
+  
+  Offer Offer[]
 }
 
-model product{
+model Product{
   id     Int @id@default(autoincrement())
   name   String @unique
   description String
@@ -52,24 +54,24 @@ model product{
   state  String
   country String
 
-  favorite favorite[]
-  cart cart[]
-  review review[]
+  Favorite Favorite[]
+  Cart Cart[]
+  Review Review[]
 }
 
-model favorite {
+model Favorite {
   id        Int      @id @default(autoincrement())
   user_id    Int
   product_id Int
 
-  user      user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  product   product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Product   Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, product_id])
 }
 
 
-model cart {
+model Cart {
   id         Int      @id @default(autoincrement())
   user_id    Int
   product_id Int
@@ -77,13 +79,13 @@ model cart {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  product    product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  User       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, product_id])
 }
 
-model review {
+model Review {
   id         Int      @id @default(autoincrement())
   user_id    Int
   product_id Int
@@ -92,8 +94,8 @@ model review {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user       user     @relation(fields: [user_id], references: [id])
-  product    product  @relation(fields: [product_id], references: [id])
+  User       User     @relation(fields: [user_id], references: [id])
+  Product    Product  @relation(fields: [product_id], references: [id])
 
   @@unique([user_id, product_id])
 }

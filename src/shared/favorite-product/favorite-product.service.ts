@@ -63,7 +63,7 @@ export class FavoriteService {
     const result = await this.prisma.favorite.findFirst({
       where: { user_id: user.userId },
       include: {
-        product: true,
+        Product: true,
       },
     });
     if (!result) throw new NotFoundException(PRODUCT_MESSAGES.EMPTY);

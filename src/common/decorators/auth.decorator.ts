@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import { user } from "@prisma/client";
+import { User } from "@prisma/client";
 /**
  * A decorator that injects the authenticated user into a controller method.
  *
@@ -12,7 +12,7 @@ import { user } from "@prisma/client";
  */
 
 export const AuthUser = createParamDecorator(
-  (data: keyof user | undefined, ctx: ExecutionContext) => {
+  (data: keyof User | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     const user = request.user;
     return user;
