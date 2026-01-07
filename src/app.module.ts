@@ -9,6 +9,7 @@ import { ReviewModule } from "./shared/review/review.module";
 import { CartModule } from "./shared/cart/cart.module";
 import { ConfigModule } from "@nestjs/config";
 import { validationSchema } from "./common/validation.prisma";
+import { FavoriteModule } from "./shared/favorite-product/favorite-product.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { validationSchema } from "./common/validation.prisma";
     MailModule,
     ProfileModule,
     ProductModule,
+    FavoriteModule,
     CartModule,
     ReviewModule,
   ],

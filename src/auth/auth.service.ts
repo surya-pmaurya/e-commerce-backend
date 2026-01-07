@@ -14,7 +14,6 @@ import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { USER_MESSAGES } from "src/common/constants/user-constants";
 import { PASSWORD_MESSAGES } from "src/common/constants/pass-constants";
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -108,7 +107,9 @@ export class AuthService {
       where: { email },
       data: { pass: hashedPassword },
     });
-    return { message: PASSWORD_MESSAGES.PASS_RESET_SUCCESS };
+    await this.mailService.sendPassUpdateMail(
+      email,
+    );
   }
 
   async validateToken(token: any) {

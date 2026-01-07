@@ -24,6 +24,7 @@ import { AuthUser } from "src/common/decorators/auth.decorator";
 import { LogInPayload } from "src/common/interfaces/payload.interface";
 import { imageFileFilter } from "src/common/filter/image-type.filter";
 
+@ApiBearerAuth()
 @ApiTags("Profile Controller")
 @Controller("profile")
 export class ProfileController {
@@ -34,7 +35,6 @@ export class ProfileController {
    */
   @ApiOperation({ summary: SWAGGER_MESSAGES.UPLOAD_PROFILE })
   @Post("upload/")
-  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiConsumes("multipart/form-data")
   @ApiBody({

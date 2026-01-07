@@ -60,14 +60,16 @@ export class FavoriteService {
    * @memberof FavoriteService
    */
   async fetchFavorites(user: LogInPayload) {
-    const result = await this.prisma.favorite.findFirst({
+    const result = await this.prisma.favorite.findMany({
       where: { user_id: user.userId },
       include: {
         Product: true,
       },
     });
-    if (!result) throw new NotFoundException(PRODUCT_MESSAGES.EMPTY);
-    return result;
+    if (!result || result.length === 0)
+      throw new NotFoundException(PRODUCT_MESSAGES.EMPTY);
+    const product = result.map((fave) => fave.Product);
+    return product;
   }
 
   /**
@@ -90,7 +92,6 @@ export class FavoriteService {
     return { message: PRODUCT_MESSAGES.DELETED };
   }
 
-  
   /**
    *remove all favorite product of current loggedin user
    *
@@ -102,7 +103,7 @@ export class FavoriteService {
     const result = await this.prisma.favorite.deleteMany({
       where: { user_id },
     });
-    if (result.count == 0)
-      throw new NotFoundException(PRODUCT_MESSAGES.EMPTY);
+    if (result.count == 0) throw new NotFoundException(PRODUCT_MESSAGES.EMPTY);
+    return { message: PRODUCT_MESSAGES.DELETE_ALL };
   }
 }

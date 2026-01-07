@@ -1,24 +1,22 @@
 import { Injectable, Logger } from "@nestjs/common";
-import * as nodemailer from 'nodemailer'
+import * as nodemailer from "nodemailer";
 import { EMAIL_M } from "../constants/email-constants";
-
 
 @Injectable()
 export class MailService {
   private logger = new Logger(MailService.name);
   private transport;
-  constructor() { 
-     this.transport=nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        secure:true,
-        port:465,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      })
+  constructor() {
+    this.transport = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      secure: true,
+      port: 465,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
   }
-  
 
   /**
    *Sending offer mail when new Offer Launched
@@ -30,9 +28,9 @@ export class MailService {
    * @memberof MailService
    */
   async offerMail(to: string, subject: string, username: string, data: any) {
-     await this.transport.sendMail({
+    await this.transport.sendMail({
       to: to,
-      from: EMAIL_M.EMAIL,
+      from: `"E-Commerce Admin" <${EMAIL_M.EMAIL}`,
       subject: subject,
       text: "A new offer just launched!",
       html: `
@@ -51,14 +49,13 @@ export class MailService {
    */
   async signupMail(email: string, username: string) {
     await this.transport.sendMail({
-      from: EMAIL_M.EMAIL,
+      from: `"E-Commerce Support" <${EMAIL_M.EMAIL}`,
       to: email,
       subject: EMAIL_M.EMAIL_SUBJECT,
-      text: `Welcome, ${username} ${EMAIL_M.TEXT_MESSAGE}`
-    })
-     this.logger.log(`[Email sent] To ${email}`)
+      text: `Welcome, ${username} ${EMAIL_M.TEXT_MESSAGE}`,
+    });
+    this.logger.log(`[Email sent] To ${email}`);
   }
-
 
   /**
    *Sending reset password mail // reset Link and OTP
@@ -70,23 +67,21 @@ export class MailService {
    */
   async sendResetMail(email: string, resetLink: string, randomToken: number) {
     await this.transport.sendMail({
-      from: EMAIL_M.EMAIL,
+      from: `"E-Commerce Support" <${EMAIL_M.EMAIL}`,
       to: email,
       subject: "Reset Your Password",
       text: `click the follwoing link to reset your password ${resetLink} \n Verification Code: ${randomToken}`,
     });
-     this.logger.log(`[Eamil Sent] To: ${email}`);
+    this.logger.log(`[Eamil Sent] To: ${email}`);
   }
 
-
-
-  async sendPassUpdateMail(email: string, resetLink: string, randomToken: number) {
+  async sendPassUpdateMail(email: string) {
     await this.transport.sendMail({
-      from: EMAIL_M.EMAIL,
+      from: `"E-Commerce Support" <${EMAIL_M.EMAIL}`,
       to: email,
       subject: "Password Updated Succesfully",
-      text: `Your password updated succesfully for ${email}`,
+      text: `Your password has been updated succesfully for Email Id :- ${email}`,
     });
-     this.logger.log(`[Eamil Sent] To: ${email}`);
+    this.logger.log(`[Eamil Sent] To: ${email}`);
   }
 }

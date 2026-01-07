@@ -1,4 +1,4 @@
 export const FAVORITE_MESSAGES = {
-    ADDED: "Product Added Successfully to Your Favorite Cart",
-    REMOVED: "Product Removed From Your Favorite Cart"
+    ADDED: "Product Successfully Added to Your Favorite List",
+    REMOVED: "Product Removed From Your Favorite List"
 }

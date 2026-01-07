@@ -30,13 +30,12 @@ import { SWAGGER_MESSAGES } from "src/common/constants/swagger-constants";
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
-
   /**
    *Submit Product review
    *
    * @param {LogInPayload} user
    * @param {CreateReviewDTO} reviewDto
-   * @return {*} 
+   * @return {*}
    * @memberof ReviewController
    */
   @ApiOperation({ summary: SWAGGER_MESSAGES.SUBMIT_REVIEW })
@@ -62,13 +61,12 @@ export class ReviewController {
     };
   }
 
-
   /**
-   *Update Review 
+   *Update Review
    *
    * @param {LogInPayload} user
    * @param {UpdateReviewDTO} updateReviewDto
-   * @return {*} 
+   * @return {*}
    * @memberof ReviewController
    */
   @Put("update")
@@ -98,7 +96,7 @@ export class ReviewController {
    *
    * @param {LogInPayload} user
    * @param {ProductIdDTO} productId
-   * @return {*} 
+   * @return {*}
    * @memberof ReviewController
    */
   @Delete("delete")

@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "src/common/guards/auths.guards";
 import { FavoriteService } from "./favorite-product.service";
@@ -20,7 +12,7 @@ import { SWAGGER_MESSAGES } from "src/common/constants/swagger-constants";
 
 @ApiBearerAuth()
 @ApiTags("Favorite Products Controller")
-@Controller("favorites")
+@Controller("favorites-product")
 @UseGuards(AuthGuard)
 @Roles(UserRole.USER)
 export class FavoriteController {
@@ -58,7 +50,6 @@ export class FavoriteController {
     const result = await this.favoriteService.fetchFavorites(user);
     return {
       message: PRODUCT_MESSAGES.PRODUCT_LIST,
-      statusCode: HttpStatus.OK,
       data: result,
     };
   }
@@ -71,13 +62,16 @@ export class FavoriteController {
    * @return {*}
    * @memberof FavoriteController
    */
-  @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_FAVORITE_PRODUCT})
+  @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_FAVORITE_PRODUCT })
   @Delete(":product_id")
   async removeFavorite(
     @AuthUser() user: LogInPayload,
     @Body() body: FavoriteProductDto
   ) {
-    return await this.favoriteService.removeFavorite(user.userId, body.product_id);
+    return await this.favoriteService.removeFavorite(
+      user.userId,
+      body.product_id
+    );
   }
 
   /**
@@ -87,9 +81,9 @@ export class FavoriteController {
    * @return {*}
    * @memberof FavoriteController
    */
-  @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_ALL_FAV_PRO})
+  @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_ALL_FAV_PRO })
   @Delete()
-  async removeAllFavorite(@AuthUser("id") user_id: number) {
-    return await this.favoriteService.removeAllFavorite(user_id);
+  async removeAllFavorite(@AuthUser() user: LogInPayload) {
+    return await this.favoriteService.removeAllFavorite(user.userId);
   }
 }

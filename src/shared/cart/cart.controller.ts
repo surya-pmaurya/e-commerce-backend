@@ -12,7 +12,12 @@ import { CartService } from "./cart.service";
 import { AddToCartDTO } from "./dto/add-to-cart.dto";
 import { CART_MESSAGES } from "src/common/constants/cart-constants";
 import { AuthUser } from "src/common/decorators/auth.decorator";
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { AuthGuard } from "src/common/guards/auths.guards";
 import { RolesGuard } from "src/common/guards/roles.guards";
 import { UpdateCartDTO } from "./dto/update-to-cart.dto";
@@ -54,7 +59,7 @@ export class CartController {
    *
    * @param {LogInPayload} user
    * @param {UpdateCartDTO} body
-   * @return {*} 
+   * @return {*}
    * @memberof CartController
    */
   @Put("update-product")
@@ -80,12 +85,12 @@ export class CartController {
    *Get all Product available in cart
    *
    * @param {LogInPayload} user
-   * @return {*} 
+   * @return {*}
    * @memberof CartController
    */
   @Get("getAll")
   @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({ summary: SWAGGER_MESSAGES.GET_ALL_PROD_FROM_CART})
+  @ApiOperation({ summary: SWAGGER_MESSAGES.GET_ALL_PROD_FROM_CART })
   @ApiResponse({
     status: HttpStatus.OK,
     description: CART_MESSAGES.FETCHED,
@@ -99,18 +104,17 @@ export class CartController {
     };
   }
 
-  
-/**
- *Delete product available in cart
- *
- * @param {LogInPayload} user
- * @param {ProductIdDTO} productIdDTO
- * @return {*} 
- * @memberof CartController
- */
-@Delete("delete-item")
+  /**
+   *Delete product available in cart
+   *
+   * @param {LogInPayload} user
+   * @param {ProductIdDTO} productIdDTO
+   * @return {*}
+   * @memberof CartController
+   */
+  @Delete("delete-item")
   @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_ITEM_FROM_CART})
+  @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE_ITEM_FROM_CART })
   async deleteProductFromCart(
     @AuthUser() user: LogInPayload,
     @Body() productIdDTO: ProductIdDTO

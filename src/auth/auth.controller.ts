@@ -1,7 +1,16 @@
-import { Controller, Post, Body, HttpStatus, Req, Delete, BadRequestException, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  Req,
+  Delete,
+  BadRequestException,
+  UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { ForgotPasswordDto } from "./dto/forgot-password.dto";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LoginDTO } from "./dto/login.dto";
 import { Request } from "express";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
@@ -12,6 +21,7 @@ import { SuccessResponse } from "src/interceptor/success-response.interface";
 import { LogInPayload } from "src/common/interfaces/payload.interface";
 import { AuthGuard } from "src/common/guards/auths.guards";
 
+@ApiBearerAuth()
 @ApiTags("Authentication Controller")
 @Controller("auth")
 export class AuthController {
@@ -41,58 +51,56 @@ export class AuthController {
     };
   }
 
-  
-/**
- *Log out user
- *
- * @param {Request} req
- * @return {*}  {Promise <SuccessResponse<any>>}
- * @memberof AuthController
- */
-@Post('logout-user')
+  /**
+   *Log out user
+   *
+   * @param {Request} req
+   * @return {*}  {Promise <SuccessResponse<any>>}
+   * @memberof AuthController
+   */
+  @Post("logout-user")
   @ApiOperation({ summary: SWAGGER_MESSAGES.LOGUT })
-  async logoutUser(@Req() req: Request) : Promise <SuccessResponse<any>> {
-    req.res?.clearCookie('Authorization')
+  async logoutUser(@Req() req: Request): Promise<SuccessResponse<any>> {
+    req.res?.clearCookie("Authorization");
     return {
       statusCode: HttpStatus.OK,
-      message: USER_MESSAGES.LOGOUT_SUCCES
-    }
-  } 
-  
-@UseGuards(AuthGuard)
-  @Delete('delete-user')
+      message: USER_MESSAGES.LOGOUT_SUCCES,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete("delete-user")
   @ApiOperation({ summary: SWAGGER_MESSAGES.DELETE })
   async deleteUser(@Req() req: Request) {
     const user = req.user as LogInPayload;
     if (!user.userId) {
       throw new BadRequestException("Invalid User");
     }
-    await this.authService.deleteUser(user.userId)
+    await this.authService.deleteUser(user.userId);
     return {
       statusCode: 200,
       message: USER_MESSAGES.DELETED,
     };
-    }
-/**
- *forgot password send reset request 
- *
- * @param {ForgotPasswordDto} body
- * @return {*} 
- * @memberof AuthController
- */
-@ApiOperation({ summary: PASSWORD_MESSAGES.PASS_RESET_MAIL })
+  }
+  /**
+   *forgot password send reset request
+   *
+   * @param {ForgotPasswordDto} body
+   * @return {*}
+   * @memberof AuthController
+   */
+  @ApiOperation({ summary: PASSWORD_MESSAGES.PASS_RESET_MAIL })
   @Post("forgot-password")
   async sendResetPassLink(@Body() body: ForgotPasswordDto) {
     await this.authService.sendResetPasswordMail(body);
     return { message: PASSWORD_MESSAGES.PASS_RESET_CODE_SENT };
   }
 
-
   /**
    *set new pass with given otp
    *
    * @param {ResetPasswordDto} body
-   * @return {*} 
+   * @return {*}
    * @memberof AuthController
    */
 
@@ -100,6 +108,6 @@ export class AuthController {
   @Post("reset-password")
   async setNewPassword(@Body() body: ResetPasswordDto) {
     await this.authService.setNewPassword(body);
-    return { Message: PASSWORD_MESSAGES.PASS_RESET_SUCCESS };
+    return { message: PASSWORD_MESSAGES.PASS_RESET_SUCCESS };
   }
 }
